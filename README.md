@@ -1,63 +1,41 @@
-# StoreSentinel — Controlled External Canary Site
+# StoreSentinel — Controlled Regression Canary Site (V2)
 
-This folder contains **templates** for a small, fictional e-commerce site used as
-the first **approved external target** for StoreSentinel after manual publication
-to GitHub Pages.
+This folder contains **templates** for the **regression** version (V2) of the
+controlled canary site. It is meant to be published manually over the existing
+V1 site so StoreSentinel can validate a real external **diff** between two scans.
 
-## Purpose
+## Differences vs V1 (intentional regressions)
 
-- Provide a real, public URL to validate the StoreSentinel crawler end-to-end
-  against a live origin (M3B.2), under controlled conditions.
-- Everything here is **fictional and controlled**: no real products, no real
-  prices, **no private data**, no secrets, no trackers, no external resources.
+- **Canary Alpha**: price `20.00 → 15.00 CAD`, availability `InStock → OutOfStock`.
+- **Canary Beta**: **removed** (no `products/beta.html`). The published repo must
+  have `products/beta.html` **deleted**.
+- **Canary Gamma**: **added** (`products/gamma.html`), image **alt text omitted**.
+- **About page**: meta description **removed**.
+- **Home**: links to a non-existent `/pages/missing.html` (a real 404 after publish).
 
 ## Important
 
-- These are **templates**: pages contain the placeholder `https://d0lph1ns.github.io` in their
-  canonical URLs and JSON-LD. Do **not** publish this folder directly.
-- Use the offline preparation script to produce a publishable copy:
+- Templates contain the `https://d0lph1ns.github.io` placeholder. Do **not** publish this folder
+  directly. Use the offline preparation script:
 
   ```bash
-  python scripts/prepare_canary_site.py --base-url https://USER.github.io/REPO
+  python scripts/prepare_canary_regression_site.py --base-url https://d0lph1ns.github.io
   ```
 
-  This writes a `canary_publish/` folder with every `https://d0lph1ns.github.io` replaced. The
-  templates in `canary_site/` are never modified.
+  This writes `canary_publish_regression_v2/` (placeholders filled) and a manifest
+  `canary_publish_regression_v2_manifest.json`. Templates are never modified.
 
-## Manual GitHub Pages publication (done by a human, later)
+## Manual publication (human, later — M3B.3B)
 
-> No credentials, no `git push`, no `gh`, no network calls are performed by this
-> repository. The steps below are **manual** and intentionally not automated.
-
-1. Choose the final URL, e.g. `https://USER.github.io/REPO`.
-2. Run the preparation script with that exact `--base-url`.
-3. Create a GitHub repository (manually) and enable **Settings → Pages**.
-4. Upload the **contents of `canary_publish/`** to the branch/folder GitHub Pages
-   serves (e.g. `main` / root, or `docs/`).
-5. Wait for Pages to build, then verify the URL loads in a browser.
-
-## Replacing `https://d0lph1ns.github.io`
-
-Every occurrence of `https://d0lph1ns.github.io` must be replaced by the published origin
-(scheme + host + optional repo path), **without a trailing slash**. The script
-does this for you. Example: `https://d0lph1ns.github.io/products/alpha.html` →
-`https://USER.github.io/REPO/products/alpha.html`.
-
-## Expected URL after publication
-
-`https://USER.github.io/REPO/` (exact value depends on your account/repo names).
-
-## Deleting the site after tests
-
-When testing is finished, remove the published site:
-
-- Disable GitHub Pages in **Settings → Pages**, and/or
-- Delete the repository (manually).
-
-Locally, simply delete the generated `canary_publish/` folder.
+1. Run the preparation script with the exact published base URL.
+2. Upload the **contents** of `canary_publish_regression_v2/` to the root of the
+   `d0lph1ns.github.io` repository (overwriting `index.html`, `products/alpha.html`,
+   `pages/about.html`, adding `products/gamma.html`).
+3. **Delete** the obsolete `products/beta.html` from the repository (see manifest).
+4. Wait for GitHub Pages to rebuild, verify in a private window.
 
 ## Hard rules
 
-- **Never** add secrets, tokens, credentials, or private data to this site.
-- Remember: GitHub Pages makes published files **publicly accessible**. Only put
-  fictional, safe content here.
+- No secrets, tokens, credentials, or private data.
+- No external resources or trackers.
+- GitHub Pages serves published files **publicly**; only fictional content here.
